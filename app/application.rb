@@ -1,3 +1,5 @@
+require 'pry'
+
 class Application
 
   @@item = ["Apples","Carrots","Pears"]
@@ -13,18 +15,20 @@ class Application
       end
 
     elsif req.path.match(/cart/)
+      if @@cart.empty?
+        resp.write "Your cart is empty"
+      else
       @@cart.each do |list|
         resp.write "#{list}\n"
       end
+    end
 
-      if @@cart.empty?
-        resp.write "Your cart is empty"
-      end
+
 
     elsif req.path.match(/search/)
 
       search_term = req.params["q"]
-    end 
+
 
       if @@cart.include?(search_term)
         resp.write "#{search_term}"
@@ -35,19 +39,22 @@ class Application
 
     elsif req.path.match(/add/)
 
-      item = req.param["q"]
-    end
+      item = req.params["item"]
 
-      if @@cart.include?(item)
+      if @@items.include?(item)
         @@cart << item
         resp.write "added #{item}"
       else
         resp.write "We don't have that item"
       end
+
     else
       resp.write "Path not found"
     end
+
+    resp.finish
   end
+end
 
 
 
@@ -66,4 +73,3 @@ class Application
   #     return "#{search_term} is one of our items"
   #   else
   #     return "Couldn't find #{search_term}"
- end
